@@ -1,0 +1,334 @@
+<title>Protein Source Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600&display=swap">
+<style>
+/* Layout: one narrow column on phones, two-card grid on wide screens. Veg tab reads green, non-veg tab reads red, like the dots on Indian food packs. */
+:root {
+  --bg: #EDF1EC;
+  --surface: #FAFCF9;
+  --fg: #15241D;
+  --muted: #52635A;
+  --line: #D3DDD5;
+  --track: #DDE6DF;
+  --veg: #2D8A4B;
+  --nonveg: #B13E2A;
+  --accent: #E4A412;
+  --on-tone: #FFFFFF;
+  --font-display: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101A15; --surface: #18251E; --fg: #E9F0EA; --muted: #A3B5A9; --line: #2B3D33; --track: #26362C;
+    --veg: #58C27A; --nonveg: #EE7E69; --accent: #F0B93A; --on-tone: #101A15;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101A15; --surface: #18251E; --fg: #E9F0EA; --muted: #A3B5A9; --line: #2B3D33; --track: #26362C;
+  --veg: #58C27A; --nonveg: #EE7E69; --accent: #F0B93A; --on-tone: #101A15;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 16px; line-height: 1.5;
+  padding-block: 24px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 880px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.1; }
+h1 { font-size: clamp(2rem, 7vw, 3rem); font-weight: 800; letter-spacing: -0.02em; }
+h2 { font-size: 1.5rem; font-weight: 800; }
+.lede { color: var(--muted); max-width: 60ch; margin: 12px 0 0; }
+.eyebrow { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; color: var(--muted); margin-bottom: 10px; }
+
+/* tabs */
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+.tab {
+  display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 8px 18px;
+  font: 600 1rem var(--font-body); color: var(--fg); background: var(--surface);
+  border: 2px solid var(--line); border-radius: 999px; cursor: pointer;
+}
+.tab[aria-selected="true"] { background: var(--tone); border-color: var(--tone); color: var(--on-tone); }
+.tab[data-key="veg"] { --tone: var(--veg); }
+.tab[data-key="non"] { --tone: var(--nonveg); }
+.mark { width: 16px; height: 16px; border: 2px solid var(--tone); border-radius: 3px; display: inline-grid; place-items: center; background: var(--surface); }
+.mark::after { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--tone); }
+.tab[aria-selected="true"] .mark { border-color: var(--surface); }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.panel-head { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+.panel-head p { margin: 0; color: var(--muted); }
+.panel { --tone: var(--veg); }
+.panel[data-key="non"] { --tone: var(--nonveg); }
+
+/* cards */
+.grid { display: grid; grid-template-columns: 1fr; gap: 12px; align-items: start; }
+@media (min-width: 720px) { .grid { grid-template-columns: 1fr 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; min-width: 0; }
+.card-btn {
+  all: unset; box-sizing: border-box; width: 100%; cursor: pointer; display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto; gap: 4px 14px; align-items: center; padding: 14px;
+}
+.card-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+.thumb { width: 64px; height: 64px; border-radius: 12px; overflow: hidden; grid-row: span 2; }
+.thumb svg { display: block; width: 100%; height: 100%; }
+.name { font-family: var(--font-display); font-weight: 800; font-size: 1.15rem; line-height: 1.2; }
+.rank { display: inline-block; min-width: 1.4em; color: var(--tone); font-variant-numeric: tabular-nums; }
+.basis { font-size: 0.8rem; color: var(--muted); }
+.chev { grid-row: span 2; width: 28px; height: 28px; display: grid; place-items: center; color: var(--muted); transition: transform .2s; }
+.card-btn[aria-expanded="true"] .chev { transform: rotate(180deg); }
+.val { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+.val b { font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; min-width: 3.2ch; font-variant-numeric: tabular-nums; }
+.val small { color: var(--muted); font-size: 0.75rem; display: block; line-height: 1; }
+.bar { flex: 1; height: 12px; border-radius: 6px; background: var(--track); overflow: hidden; }
+.bar i { display: block; height: 100%; border-radius: 6px; background: var(--tone); }
+.more { padding: 0 14px 16px; display: grid; gap: 10px; border-top: 1px dashed var(--line); padding-top: 14px; margin: 0 14px 0; padding-inline: 0; }
+.more[hidden] { display: none !important; }
+.more div { display: grid; gap: 2px; }
+.label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); font-weight: 600; }
+.more p { margin: 0; }
+.more strong { font-variant-numeric: tabular-nums; }
+
+/* calculator */
+.calc { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 18px; }
+.fields { display: grid; gap: 16px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .fields { grid-template-columns: 200px 1fr; } }
+.field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.field > span, legend { font-weight: 600; font-size: 0.9rem; }
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.num { display: flex; align-items: center; gap: 8px; }
+input[type="number"] {
+  width: 100%; min-height: 48px; font: 600 1.25rem var(--font-body); color: var(--fg); background: var(--bg);
+  border: 2px solid var(--line); border-radius: 10px; padding: 6px 12px; font-variant-numeric: tabular-nums;
+}
+.seg { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.seg label { cursor: pointer; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg span {
+  display: inline-flex; flex-direction: column; justify-content: center; min-height: 48px; padding: 6px 14px;
+  border: 2px solid var(--line); border-radius: 10px; background: var(--bg); font-weight: 600; font-size: 0.95rem; line-height: 1.2;
+}
+.seg span small { font-weight: 500; color: var(--muted); font-size: 0.75rem; }
+.seg input:checked + span { border-color: var(--accent); background: var(--accent); color: #15241D; }
+.seg input:checked + span small { color: #15241D; }
+.seg input:focus-visible + span { outline: 3px solid var(--fg); outline-offset: 2px; }
+.target { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 16px; }
+.target b { font-family: var(--font-display); font-size: 2.6rem; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.target span { color: var(--muted); }
+.cols { display: grid; gap: 20px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .cols { grid-template-columns: 1fr 1fr; } }
+.cols h3 { font-size: 1rem; display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.cols ul { list-style: none; margin: 0; padding: 0; }
+.cols li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 9px 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+.cols li:last-child { border-bottom: 0; }
+.cols li .n { font-weight: 600; }
+.cols li .s { font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; }
+.cols li .a { grid-column: 1 / -1; font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.hint { color: var(--muted); font-size: 0.9rem; margin: 0; }
+.mini { --tone: var(--veg); } .mini.non { --tone: var(--nonveg); }
+
+.notes { color: var(--muted); font-size: 0.85rem; display: grid; gap: 8px; border-top: 1px solid var(--line); padding-top: 18px; }
+.notes p { margin: 0; max-width: 70ch; }
+.notes strong { color: var(--fg); }
+.notes .credit { font-size: 0.95rem; padding-top: 6px; }
+@media (prefers-reduced-motion: reduce) { .chev { transition: none; } }
+</style>
+
+<main class="wrap">
+  <header>
+    <div class="eyebrow">Protein, per 100 g</div>
+    <h1>Six veg and six non-veg foods that pack the most protein</h1>
+    <p class="lede">Pick a tab, tap a card for a serving size and a cooking tip, then use the calculator to see what your day could look like. All figures are approximate.</p>
+  </header>
+
+  <section aria-label="Food lists">
+    <div class="tabs" role="tablist" aria-label="Diet type">
+      <button class="tab" role="tab" id="tab-veg" data-key="veg" aria-selected="true" aria-controls="panel"><span class="mark"></span>Vegetarian</button>
+      <button class="tab" role="tab" id="tab-non" data-key="non" aria-selected="false" aria-controls="panel"><span class="mark"></span>Non-vegetarian</button>
+    </div>
+    <div id="panel" class="panel" role="tabpanel" aria-labelledby="tab-veg" style="margin-top:18px"></div>
+  </section>
+
+  <section class="calc" aria-labelledby="calc-title">
+    <div>
+      <div class="eyebrow">Calculator</div>
+      <h2 id="calc-title">How much protein do you need?</h2>
+    </div>
+    <div class="fields">
+      <label class="field" for="wt"><span>Body weight</span>
+        <span class="num"><input id="wt" type="number" inputmode="decimal" min="20" max="200" step="1" value="70"> <span>kg</span></span>
+      </label>
+      <fieldset>
+        <legend>Activity level</legend>
+        <div class="seg">
+          <label for="act-l"><input type="radio" name="act" id="act-l" value="0.8" checked><span>Light<small>0.8 g per kg</small></span></label>
+          <label for="act-a"><input type="radio" name="act" id="act-a" value="1.2"><span>Active<small>1.2 g per kg</small></span></label>
+          <label for="act-s"><input type="radio" name="act" id="act-s" value="1.6"><span>Strength training<small>1.6 g per kg</small></span></label>
+        </div>
+      </fieldset>
+    </div>
+    <div class="target" aria-live="polite"><b id="target">56</b><span>grams of protein a day (approximate)</span></div>
+    <p class="hint">Servings below show how many it would take if you ate only that one food. In real life, mix a few foods across the day.</p>
+    <div class="cols" id="servings"></div>
+  </section>
+
+  <footer class="notes">
+    <p><strong>Good to know.</strong> Dry foods like dal and soya chunks soak up water when cooked, so their protein per 100 g falls a lot after cooking. That is why dry weights look so high. Compare each food using its serving size too.</p>
+    <p><strong>About the numbers.</strong> Values are rounded and based on commonly used USDA-style food data. Real foods vary by type, brand and how you cook them.</p>
+    <p><strong>Please note.</strong> Protein needs and targets vary from person to person. If you have a health condition, talk to a doctor or a dietitian before changing your diet.</p>
+    <p class="credit">Made by <strong>@piyushranaxf</strong></p>
+  </footer>
+</main>
+
+<script>
+(function () {
+  var bowl = function (bowlColor, lentil, r, rows) {
+    var s = '<path d="M10 46h60a30 30 0 0 1-60 0z" fill="' + bowlColor + '"/>';
+    var y = 44;
+    for (var i = 0; i < rows.length; i++) {
+      var n = rows[i], w = n * r * 2, x0 = 40 - w / 2 + r;
+      for (var j = 0; j < n; j++) s += '<circle cx="' + (x0 + j * r * 2) + '" cy="' + y + '" r="' + r + '" fill="' + lentil + '"/>';
+      y -= r * 1.6;
+    }
+    return s;
+  };
+  var cube = function (t) {
+    return '<g transform="' + t + '"><polygon points="40,16 62,27 40,38 18,27" fill="#FFFFFF" stroke="#CFC6B3" stroke-width="1.5"/><polygon points="18,27 40,38 40,62 18,51" fill="#EFE9DC" stroke="#CFC6B3" stroke-width="1.5"/><polygon points="62,27 40,38 40,62 62,51" fill="#E0D8C6" stroke="#CFC6B3" stroke-width="1.5"/></g>';
+  };
+  var chunk = function (x, y, rot) {
+    return '<g transform="rotate(' + rot + ' ' + x + ' ' + y + ')"><ellipse cx="' + x + '" cy="' + y + '" rx="15" ry="9" fill="#B98B4F"/><circle cx="' + (x - 5) + '" cy="' + (y - 2) + '" r="2" fill="#94693A"/><circle cx="' + (x + 4) + '" cy="' + (y + 2) + '" r="2.4" fill="#94693A"/><circle cx="' + (x + 8) + '" cy="' + (y - 3) + '" r="1.6" fill="#94693A"/></g>';
+  };
+  var art = {
+    soya: chunk(30, 28, -20) + chunk(52, 44, 15) + chunk(28, 56, 8),
+    peanut: '<g transform="rotate(-30 40 40)"><ellipse cx="40" cy="27" rx="15" ry="14" fill="#D9A566"/><ellipse cx="40" cy="53" rx="15" ry="14" fill="#D9A566"/><rect x="28" y="30" width="24" height="20" fill="#D9A566"/><path d="M27 40q13 -6 26 0" stroke="#B67F3F" stroke-width="2.5" fill="none"/><circle cx="35" cy="22" r="1.6" fill="#B67F3F"/><circle cx="45" cy="30" r="1.6" fill="#B67F3F"/><circle cx="36" cy="55" r="1.6" fill="#B67F3F"/><circle cx="46" cy="60" r="1.6" fill="#B67F3F"/></g>',
+    masoor: bowl("#4F7A8C", "#E5712F", 5, [7, 5, 3]),
+    moong: bowl("#B5553A", "#8DB255", 5, [7, 5, 3]),
+    chana: bowl("#3E6B58", "#D8B16A", 7, [5, 4, 2]),
+    paneer: cube("translate(-6 6) scale(.72)") + cube("translate(22 12) scale(.62)"),
+    chicken: '<path d="M10 46C10 24 42 14 62 26c11 8 5 30-16 36C30 66 10 64 10 46z" fill="#EBB98F"/><g stroke="#8A5330" stroke-width="3" stroke-linecap="round"><path d="M26 30l16 22"/><path d="M36 25l16 22"/><path d="M20 40l12 16"/></g>',
+    mutton: '<path d="M14 38C14 22 38 15 53 23c11 6 9 27-8 32C28 60 14 54 14 38z" fill="#B5483A"/><path d="M26 34q12 -8 22 -2" stroke="#E7A79B" stroke-width="3" fill="none" stroke-linecap="round"/><g transform="rotate(35 52 48)"><rect x="50" y="43" width="24" height="9" rx="4.5" fill="#F5EFE4"/><circle cx="73" cy="43" r="5" fill="#F5EFE4"/><circle cx="73" cy="52" r="5" fill="#F5EFE4"/></g>',
+    tuna: '<path d="M56 40L74 26v28z" fill="#5E7FA1"/><ellipse cx="36" cy="40" rx="26" ry="15" fill="#6E8FB0"/><ellipse cx="36" cy="47" rx="22" ry="7" fill="#B8CCDD"/><path d="M30 26l10-9 6 11z" fill="#5E7FA1"/><circle cx="20" cy="36" r="3" fill="#1B2A33"/><path d="M28 30q4 10 0 20" stroke="#5E7FA1" stroke-width="2" fill="none"/>',
+    prawn: '<path d="M18 58C8 36 30 14 56 24" stroke="#F08A5D" stroke-width="17" stroke-linecap="round" fill="none"/><g stroke="#D4663A" stroke-width="2.5" stroke-linecap="round"><path d="M16 48l11 -3"/><path d="M19 38l11 1"/><path d="M26 29l8 6"/><path d="M38 24l3 9"/></g><path d="M56 24l16 -8-3 14z" fill="#E8744A"/><circle cx="24" cy="62" r="2.6" fill="#1B2A33"/><path d="M12 62q-6 -2 -8 -8M14 66q-6 3 -9 0" stroke="#D4663A" stroke-width="2" fill="none" stroke-linecap="round"/>',
+    salmon: '<rect x="10" y="22" width="60" height="36" rx="18" fill="#F28F6B"/><g stroke="#FBD0BF" stroke-width="3" fill="none" stroke-linecap="round"><path d="M22 30q18 6 38 0"/><path d="M20 40q20 6 42 0"/><path d="M22 50q18 5 36 0"/></g>',
+    egg: '<ellipse cx="28" cy="42" rx="17" ry="21" fill="#FFFFFF" stroke="#E3DAC3" stroke-width="2"/><circle cx="28" cy="46" r="8" fill="#F3B51C"/><ellipse cx="55" cy="38" rx="15" ry="19" fill="#FFFFFF" stroke="#E3DAC3" stroke-width="2"/><circle cx="55" cy="42" r="7" fill="#F3B51C"/>'
+  };
+  var DATA = {
+    veg: {
+      title: "Vegetarian",
+      sub: "Ranked from most to least protein per 100 g.",
+      foods: [
+        { name: "Soya chunks", p: 52, basis: "dry weight", g: 30, sl: "30 g dry, a small handful", tip: "Soak in hot water for 10 minutes, squeeze out the water, then add to curry or pulao.", bg: "#F6EAD2", art: "soya" },
+        { name: "Peanuts", p: 26, basis: "raw weight", g: 30, sl: "30 g raw, a small handful", tip: "Eat a small handful dry-roasted, or add to poha and salads. Skip heavy salting.", bg: "#F8E7CF", art: "peanut" },
+        { name: "Masoor dal (red lentils)", p: 25, basis: "dry weight", g: 40, sl: "40 g dry, about one bowl once cooked", tip: "Cooks fast without soaking. Add lemon juice at the end and pair with rice or roti.", bg: "#FBE3D0", art: "masoor" },
+        { name: "Moong dal", p: 24, basis: "dry weight", g: 40, sl: "40 g dry, about one bowl once cooked", tip: "Make it into chilla or khichdi. Soaking for 30 minutes helps it cook faster.", bg: "#EAF1DB", art: "moong" },
+        { name: "Chickpeas (kabuli chana)", p: 20, basis: "dry weight", g: 40, sl: "40 g dry, about one bowl once cooked", tip: "Soak overnight, then boil until soft. Toss with onion, tomato and lemon for a quick chaat.", bg: "#F3EBD9", art: "chana" },
+        { name: "Paneer", p: 18, basis: "raw, as bought", g: 80, sl: "80 g, about 5 small cubes", tip: "Lightly pan-sear cubes before adding to gravy so they stay firm and do not crumble.", bg: "#E3EEE5", art: "paneer" }
+      ]
+    },
+    non: {
+      title: "Non-vegetarian",
+      sub: "Ranked from most to least protein per 100 g.",
+      foods: [
+        { name: "Chicken breast", p: 31, basis: "cooked weight", g: 120, sl: "120 g cooked, one small piece", tip: "Grill or poach it to keep it moist.", bg: "#F7E3DC", art: "chicken" },
+        { name: "Mutton (lean)", p: 27, basis: "cooked weight", g: 100, sl: "100 g cooked, about 3 to 4 pieces", tip: "Choose lean pieces and slow-cook until tender. Remove visible fat before cooking.", bg: "#F1DAD5", art: "mutton" },
+        { name: "Tuna", p: 26, basis: "cooked, canned in water and drained", g: 100, sl: "100 g drained, about one small can", tip: "Drain the can and mix with onion, lemon and pepper for a quick salad or sandwich.", bg: "#DCE9F2", art: "tuna" },
+        { name: "Prawns", p: 24, basis: "cooked weight", g: 100, sl: "100 g cooked, about 8 medium prawns", tip: "Cook for just a few minutes until pink and curled. Overcooking makes them rubbery.", bg: "#FBE0D4", art: "prawn" },
+        { name: "Salmon", p: 22, basis: "cooked weight", g: 120, sl: "120 g cooked, one small fillet", tip: "Bake or pan-sear with lemon and herbs. Cook until it flakes easily with a fork.", bg: "#FBE1D6", art: "salmon" },
+        { name: "Eggs", p: 13, basis: "boiled weight", g: 100, sl: "2 large boiled eggs (100 g)", tip: "Boil for 8 to 10 minutes for a firm yolk. Keep a few ready in the fridge.", bg: "#FBF0C9", art: "egg", piece: { word: "egg", per: 2 } }
+      ]
+    }
+  };
+  var SCALE = 55;
+  Object.keys(DATA).forEach(function (k) {
+    DATA[k].foods.forEach(function (f) { f.sp = Math.round(f.p * f.g / 100); });
+  });
+
+  var panel = document.getElementById("panel");
+  var tabs = document.querySelectorAll(".tab");
+  var current = "veg";
+  var open = {};
+
+  var chev = '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  function renderPanel() {
+    var d = DATA[current];
+    panel.setAttribute("data-key", current);
+    panel.setAttribute("aria-labelledby", "tab-" + current);
+    var html = '<div class="panel-head"><h2>' + d.title + '</h2><p>' + d.sub + ' Bars use the same scale on both tabs.</p></div><div class="grid">';
+    d.foods.forEach(function (f, i) {
+      var id = current + "-" + i;
+      var isOpen = open[id] === undefined ? i === 0 : open[id];
+      html += '<article class="card">' +
+        '<button class="card-btn" type="button" id="b-' + id + '" data-id="' + id + '" aria-expanded="' + isOpen + '" aria-controls="m-' + id + '">' +
+        '<span class="thumb"><svg viewBox="0 0 80 80" role="img" aria-label="Illustration of ' + f.name.toLowerCase() + '"><rect width="80" height="80" fill="' + f.bg + '"/>' + art[f.art] + '</svg></span>' +
+        '<span class="name"><span class="rank">' + (i + 1) + '.</span> ' + f.name + '</span>' +
+        '<span class="chev">' + chev + '</span>' +
+        '<span class="basis">' + f.basis + '</span>' +
+        '<span class="val"><span><b>' + f.p + ' g</b><small>per 100 g</small></span><span class="bar" aria-hidden="true"><i style="width:' + (f.p / SCALE * 100).toFixed(1) + '%"></i></span></span>' +
+        '</button>' +
+        '<div class="more" id="m-' + id + '" role="region" aria-labelledby="b-' + id + '"' + (isOpen ? '' : ' hidden') + '>' +
+        '<div><span class="label">One serving</span><p>' + f.sl + ', about <strong>' + f.sp + ' g protein</strong></p></div>' +
+        '<div><span class="label">Tip</span><p>' + f.tip + '</p></div>' +
+        '</div></article>';
+    });
+    html += '</div>';
+    panel.innerHTML = html;
+  }
+
+  panel.addEventListener("click", function (e) {
+    var b = e.target.closest(".card-btn");
+    if (!b) return;
+    var id = b.getAttribute("data-id");
+    var now = b.getAttribute("aria-expanded") !== "true";
+    open[id] = now;
+    b.setAttribute("aria-expanded", String(now));
+    document.getElementById("m-" + id).hidden = !now;
+  });
+
+  tabs.forEach(function (t) {
+    t.addEventListener("click", function () {
+      current = t.getAttribute("data-key");
+      tabs.forEach(function (x) { x.setAttribute("aria-selected", String(x === t)); });
+      renderPanel();
+    });
+  });
+
+  /* calculator */
+  var wt = document.getElementById("wt");
+  var targetEl = document.getElementById("target");
+  var listEl = document.getElementById("servings");
+
+  function fmt(n) {
+    var r = Math.round(n * 10) / 10;
+    return (r % 1 === 0) ? String(r) : r.toFixed(1);
+  }
+  function calc() {
+    var w = parseFloat(wt.value);
+    if (!(w > 0)) w = 0;
+    if (w > 200) w = 200;
+    var f = parseFloat(document.querySelector('input[name="act"]:checked').value);
+    var target = Math.round(w * f);
+    targetEl.textContent = target;
+    var html = "";
+    ["veg", "non"].forEach(function (k) {
+      html += '<div><h3 class="mini ' + k + '"><span class="mark" style="--tone:var(--' + (k === "veg" ? "veg" : "nonveg") + ')"></span>' + DATA[k].title + '</h3><ul>';
+      DATA[k].foods.forEach(function (food) {
+        var n = target / food.sp;
+        var grams = Math.round(n * food.g);
+        var extra = food.piece ? ", about " + fmt(n * food.piece.per) + " eggs" : "";
+        html += '<li><span class="n">' + food.name + '</span><span class="s">' + fmt(n) + ' servings</span>' +
+          '<span class="a">' + grams + ' g (' + food.basis.split(",")[0] + ')' + extra + '</span></li>';
+      });
+      html += '</ul></div>';
+    });
+    listEl.innerHTML = html;
+  }
+  wt.addEventListener("input", calc);
+  document.querySelectorAll('input[name="act"]').forEach(function (r) { r.addEventListener("change", calc); });
+
+  renderPanel();
+  calc();
+})();
+</script>
